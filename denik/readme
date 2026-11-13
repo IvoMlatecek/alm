@@ -4,8 +4,8 @@ Osobní deník v Pythonu postavený na vlastnoručně implementovaných datovýc
 
 ## Architektura
 
-- **bbclist**: Vlastní dynamické pole nad fixním seznamem s automatickým zvětšováním kapacity.
-- **BBC**: Uzel představující jeden den (obsahuje datum, seznam záznamů a obousměrné ukazatele `next` a `prev`).
+- **denlist**: Vlastní dynamické pole nad fixním seznamem s automatickým zvětšováním kapacity.
+- **den**: Uzel představující jeden den (obsahuje datum, seznam záznamů a obousměrné ukazatele `next` a `prev`).
 - **spjogec**: Obousměrně zřetězený seznam pro správu posloupnosti dnů.
 
 ## Klíčové vlastnosti
