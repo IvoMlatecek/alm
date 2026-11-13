@@ -1,0 +1,21 @@
+# Dalauan Diary
+
+Osobní deník v Pythonu postavený na vlastnoručně implementovaných datových strukturách s grafickým rozhraním v knihovně Tkinter.
+
+## Architektura
+
+- **bbclist**: Vlastní dynamické pole nad fixním seznamem s automatickým zvětšováním kapacity.
+- **BBC**: Uzel představující jeden den (obsahuje datum, seznam záznamů a obousměrné ukazatele `next` a `prev`).
+- **spjogec**: Obousměrně zřetězený seznam pro správu posloupnosti dnů.
+
+## Klíčové vlastnosti
+
+- Grafické uživatelské rozhraní (Tkinter) s přehledným seznamem záznamů.
+- Navigace mezi dny (Začátek, Předchozí, Další, Konec).
+- Dynamické zakládání dnů a automatické mazání prázdných dnů při smazání posledního záznamu.
+- Trvalé uložení dat a načítání ze souboru JSON (`denik.json`).
+
+## Spuštění
+
+```bash
+python DalauanDiary.py
