@@ -5,7 +5,7 @@ import tkinter as tk
 from tkinter import messagebox, simpledialog
 
 
-class bbclist:
+class denlist:
     def __init__(self, capacita=4):
         self.capacita = capacita
         self._size = 0
@@ -46,10 +46,10 @@ class bbclist:
         return self._size == 0
 
 
-class BBC:
+class den:
     def __init__(self, date_obj):
         self.date = date_obj  
-        self.entries = bbclist()  
+        self.entries = denlist()  
         self.next = None
         self.prev = None
 
@@ -67,29 +67,29 @@ class spojogec:
         return self.pocet
     
     def add(self, gec):
-        new_BBC = BBC(gec)
+        new_den = den(gec)
         if self.is_empty():
-            self.head = new_BBC
-            self.tail = new_BBC
+            self.head = new_den
+            self.tail = new_den
         else:
-            self.tail.next = new_BBC
-            new_BBC.prev = self.tail
-            self.tail = new_BBC
+            self.tail.next = new_den
+            new_den.prev = self.tail
+            self.tail = new_den
         self.pocet += 1
-        return new_BBC
+        return new_den
 
-    def odstranBBC(self, bbc):
-        if not bbc:
+    def odstranden(self, den):
+        if not den:
             return
-        if bbc.prev:
-            bbc.prev.next = bbc.next
+        if den.prev:
+            den.prev.next = den.next
         else:
-            self.head = bbc.next
+            self.head = den.next
          
-        if bbc.next:
-            bbc.next.prev = bbc.prev
+        if den.next:
+            den.next.prev = den.prev
         else:
-            self.tail = bbc.prev
+            self.tail = den.prev
          
         self.pocet -= 1
 
@@ -231,7 +231,7 @@ class DiaryGUI:
             if self.tentoDen.entries.is_empty():
                 next_n = self.tentoDen.next
                 prev_n = self.tentoDen.prev
-                self.dny.odstranBBC(self.tentoDen)
+                self.dny.odstranden(self.tentoDen)
                 if next_n:
                     self.tentoDen = next_n
                 elif prev_n:
@@ -242,7 +242,10 @@ class DiaryGUI:
             self.refresh_ui()
 
     def op_save(self):
-        filename = "denik.json"
+       
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        filename = os.path.join(base_dir, "denik.json")
+        
         data_to_save = []
         curr = self.dny.head
         while curr:
@@ -261,9 +264,12 @@ class DiaryGUI:
             messagebox.showerror("Chyba", str(e))
 
     def op_load(self):
-        filename = "denik.json"
+        
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        filename = os.path.join(base_dir, "denik.json")
+
         if not os.path.exists(filename):
-            messagebox.showwarning("Chyba", "Soubor neexistuje.")
+            messagebox.showwarning("Chyba", f"Soubor neexistuje na cestě: {filename}")
             return
 
         try:
