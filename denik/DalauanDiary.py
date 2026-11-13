@@ -3,6 +3,8 @@ import json
 import os
 import tkinter as tk
 from tkinter import messagebox, simpledialog
+from PIL import Image, ImageTk, ImageSequence
+
 
 
 class denlist:
@@ -94,47 +96,159 @@ class spojogec:
         self.pocet -= 1
 
 
-
-
 class DiaryGUI:
     def __init__(self, root):
         self.root = root
         self.root.title("Dalauan Diary")
         self.root.geometry("1000x600")
 
+       
+        folder = os.path.dirname(os.path.abspath(__file__))
+        gif_path = os.path.join(folder, "sracka.gif")
+
+        self.gif_frames = []
+        self.gif_durations = []
+
+        if os.path.exists(gif_path):
+            gif = Image.open(gif_path)
+            print(gif)
+            for frame in ImageSequence.Iterator(gif):
+                resized = frame.copy().convert("RGBA").resize(
+                    (1000, 600),
+                    Image.Resampling.LANCZOS
+                )
+
+                self.gif_frames.append(ImageTk.PhotoImage(resized))
+                self.gif_durations.append(
+                    frame.info.get("duration", 100)
+                )
+
+            self.gif_label = tk.Label(self.root, bd=0)
+            self.gif_label.place(
+                x=0, y=0,
+                relwidth=1,
+                relheight=1
+            )
+
+            self.animate_gif()
+
+           
+            self.gif_label.lower()
+
+        else:
+            messagebox.showwarning(
+                "GIF nenalezen",
+                f"Nepodařilo se najít GIF: {gif_path}"
+            )
+
+       
+
         self.dny = spojogec()
         self.tentoDen = None
 
-        
-        self.lbl_date = tk.Label(root, text="denik je prazdny")
+        self.lbl_date = tk.Label(
+            root,
+            text="denik je prazdny"
+        )
         self.lbl_date.pack(pady=10)
 
-        self.lbl_info = tk.Label(root, text="Celkem dnů: 0",)
+        self.lbl_info = tk.Label(
+            root,
+            text="Celkem dnů: 0"
+        )
         self.lbl_info.pack()
 
-       
-        self.listbox_entries = tk.Listbox(root, width=100, height=12)
+        self.listbox_entries = tk.Listbox(
+            root,
+            width=100,
+            height=12
+        )
         self.listbox_entries.pack(pady=10)
 
-        
+       
+
         frame_nav = tk.Frame(root)
         frame_nav.pack(pady=5)
 
-        tk.Button(frame_nav, text="<< Začátek", command=self.op_start).grid(row=0, column=0, padx=5)
-        tk.Button(frame_nav, text="< Předchozí", command=self.op_previous).grid(row=0, column=1, padx=5)
-        tk.Button(frame_nav, text="Další >", command=self.op_next).grid(row=0, column=2, padx=5)
-        tk.Button(frame_nav, text="Konec >>", command=self.op_end).grid(row=0, column=3, padx=5)
+        tk.Button(
+            frame_nav,
+            text="<< Začátek",
+            command=self.op_start
+        ).grid(row=0, column=0, padx=5)
 
-        
+        tk.Button(
+            frame_nav,
+            text="< Předchozí",
+            command=self.op_previous
+        ).grid(row=0, column=1, padx=5)
+
+        tk.Button(
+            frame_nav,
+            text="Další >",
+            command=self.op_next
+        ).grid(row=0, column=2, padx=5)
+
+        tk.Button(
+            frame_nav,
+            text="Konec >>",
+            command=self.op_end
+        ).grid(row=0, column=3, padx=5)
+
+       
+
         frame_actions = tk.Frame(root)
         frame_actions.pack(pady=10)
 
-        tk.Button(frame_actions, text="Nový záznam/den", bg="#d4edda", command=self.op_new).grid(row=0, column=0, padx=5)
-        tk.Button(frame_actions, text="Smazat záznam", bg="#f8d7da", command=self.op_delete).grid(row=0, column=1, padx=5)
-        tk.Button(frame_actions, text="Uložit", command=self.op_save).grid(row=0, column=2, padx=5)
-        tk.Button(frame_actions, text="Načíst", command=self.op_load).grid(row=0, column=3, padx=5)
+        tk.Button(
+            frame_actions,
+            text="Nový záznam/den",
+            bg="#d4edda",
+            command=self.op_new
+        ).grid(row=0, column=0, padx=5)
+
+        tk.Button(
+            frame_actions,
+            text="Smazat záznam",
+            bg="#f8d7da",
+            command=self.op_delete
+        ).grid(row=0, column=1, padx=5)
+
+        tk.Button(
+            frame_actions,
+            text="Uložit",
+            command=self.op_save
+        ).grid(row=0, column=2, padx=5)
+
+        tk.Button(
+            frame_actions,
+            text="Načíst",
+            command=self.op_load
+        ).grid(row=0, column=3, padx=5)
 
         self.refresh_ui()
+
+    
+
+    def animate_gif(self, frame=0):
+        if not self.gif_frames:
+            return
+
+        self.gif_label.config(
+            image=self.gif_frames[frame]
+        )
+
+        next_frame = (frame + 1) % len(self.gif_frames)
+
+        duration = self.gif_durations[frame]
+
+        self.root.after(
+            duration,
+            self.animate_gif,
+            next_frame
+        )
+
+
+
 
     def refresh_ui(self):
         
